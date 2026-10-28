@@ -49,6 +49,7 @@ public class SiteDaoRedisImpl implements SiteDao {
 
            return siteIds.stream()
                    .map(jedis::hgetAll)
+                   .filter(Objects::nonNull)
                    .map(Site::new)
                    .collect(Collectors.toSet());
        }
