@@ -7,8 +7,10 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Tuple;
+import redis.clients.jedis.params.ZAddParams;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -51,6 +53,9 @@ public class MetricDaoRedisZsetImpl implements MetricDao {
         // START Challenge #2
         String metricKey = RedisSchema.getDayMetricKey(siteId, unit, dateTime);
         Integer minuteOfDay = getMinuteOfDay(dateTime);
+
+        jedis.zadd(metricKey, minuteOfDay, value + ":" + minuteOfDay);
+        jedis.expire(metricKey, METRIC_EXPIRATION_SECONDS);
         // END Challenge #2
     }
 
